@@ -1,0 +1,17 @@
+# LeRobot hub datasets used for the scale-out validation: <config name> <repo id> <episodes>
+# Configs (robots/, sources/, datasets/) for each are committed; sources/<name>.yaml pins the exact revision.
+pusht                          lerobot/pusht                          100
+xarm_lift_medium               lerobot/xarm_lift_medium               100
+aloha_sim_insertion_human      lerobot/aloha_sim_insertion_human      40
+aloha_sim_transfer_cube_human  lerobot/aloha_sim_transfer_cube_human  40
+utokyo_xarm_pick_and_place     lerobot/utokyo_xarm_pick_and_place     40
+austin_buds_dataset            lerobot/austin_buds_dataset            40
+svla_so101_pickplace           lerobot/svla_so101_pickplace           40
+columbia_cairlab_pusht_real    lerobot/columbia_cairlab_pusht_real    40
+libero_10_image                lerobot/libero_10_image                40
+jaco_play                      lerobot/jaco_play                      40
+iamlab_cmu_pickup_insert       lerobot/iamlab_cmu_pickup_insert       40
+fmb                            lerobot/fmb                            40
+orange_cube_pnp_with_force     wengmister/orange_cube_pnp_with_force  40
+aloha_static_cups_open         lerobot/aloha_static_cups_open         40
+unitreeh1_fold_clothes         lerobot/unitreeh1_fold_clothes         12

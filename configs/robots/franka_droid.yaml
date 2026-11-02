@@ -1,0 +1,78 @@
+# Franka Panda DROID rig: 2 exterior ZED cams + wrist ZED (left images), no depth/F/T.
+# Demonstrates that the same pipeline runs unchanged on a different embodiment.
+robot_id: franka_droid
+robot_type: franka
+description: DROID Franka Panda, Robotiq 2F-85, 2 exterior + 1 wrist stereo camera (left eye), Oculus teleop.
+target_fps: 15
+calibration_version: uncalibrated
+sync:
+  mode: hardware_trigger             # ZED cameras in DROID are frame-synced
+  reference_stream: exterior_1
+  clock_fit: lower_envelope
+  max_frame_tolerance_ms: 35
+raw_video: {codec: libx264, crf: 18, preset: veryfast, gop: 15}
+
+streams:
+  exterior_1:
+    kind: rgb
+    topic: /zed_ext1/left/image_rect_color
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 15
+    shape: [180, 320, 3]
+    dtype: uint8
+    known_latency_ms: 40
+    clock: {offset_ms: 5, drift_ppm: 20, jitter_ms: 0.2, latency_ms: 40, latency_jitter_ms: 5, drop_prob: 0.002}
+  exterior_2:
+    kind: rgb
+    topic: /zed_ext2/left/image_rect_color
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 15
+    shape: [180, 320, 3]
+    dtype: uint8
+    known_latency_ms: 40
+    clock: {offset_ms: 5, drift_ppm: 20, jitter_ms: 0.2, latency_ms: 40, latency_jitter_ms: 5, drop_prob: 0.002}
+  wrist:
+    kind: rgb
+    topic: /zed_wrist/left/image_rect_color
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 15
+    shape: [180, 320, 3]
+    dtype: uint8
+    known_latency_ms: 45
+    clock: {offset_ms: -3, drift_ppm: -25, jitter_ms: 0.3, latency_ms: 45, latency_jitter_ms: 6, drop_prob: 0.003}
+  cartesian_state:
+    kind: pose
+    topic: /franka/ee_state
+    msg_type: geometry_msgs/msg/PoseStamped
+    rate_hz: 15
+    shape: [6]
+    names: [x, y, z, roll, pitch, yaw]
+    known_latency_ms: 2
+    clock: {drift_ppm: 2, jitter_ms: 0.05, latency_ms: 2, latency_jitter_ms: 0.5}
+  gripper:
+    kind: joint_state
+    topic: /gripper/joint_states
+    msg_type: sensor_msgs/msg/JointState
+    rate_hz: 15
+    shape: [1]
+    names: [gripper]
+    value_range: [[0, 1]]
+    known_latency_ms: 2
+    clock: {drift_ppm: 2, jitter_ms: 0.05, latency_ms: 2, latency_jitter_ms: 0.5}
+  action:
+    kind: twist_cmd
+    topic: /teleop/cartesian_velocity
+    msg_type: sensor_msgs/msg/JointState   # stamped command vector (twist + gripper) in .position
+    rate_hz: 15
+    shape: [7]
+    names: [vx, vy, vz, wx, wy, wz, gripper]
+    known_latency_ms: 1
+    clock: {latency_ms: 1, latency_jitter_ms: 0.3}
+
+features:
+  observation.images.exterior_1: {stream: exterior_1}
+  observation.images.exterior_2: {stream: exterior_2}
+  observation.images.wrist: {stream: wrist}
+  observation.cartesian_state: {stream: cartesian_state, interp: linear, angle_dims: [3, 4, 5]}
+  observation.gripper: {stream: gripper, interp: linear}
+  action: {stream: action, interp: hold}

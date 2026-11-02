@@ -1,0 +1,18 @@
+name: droid100
+repo_id: lerobot/droid_100
+revision: 87301a2d2e99340e2010c9ef0f1d8e780b08aaf9
+license: mit
+robot: franka_droid
+local_dir: data/sources/lerobot__droid_100
+episodes: all
+session_size: 10
+operator: droid_operator
+scene_id: droid_lab
+success: true
+streams:
+  exterior_1: {key: observation.images.exterior_image_1_left}
+  exterior_2: {key: observation.images.exterior_image_2_left}
+  wrist: {key: observation.images.wrist_image_left}
+  cartesian_state: {key: observation.state, index: [0, 1, 2, 3, 4, 5]}
+  gripper: {key: observation.state, index: [6]}
+  action: {key: action}

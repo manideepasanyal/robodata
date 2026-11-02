@@ -1,0 +1,22 @@
+# Same pipeline, different embodiment: DROID Franka (3 RGB cams, Cartesian state, velocity actions).
+name: franka_droid100
+repo_id: robodata/franka_droid100
+fps: 15
+image_size: [180, 320]
+robot_type: franka
+license: mit
+sources:
+  - {robot_id: franka_droid}
+cameras: [exterior_1, exterior_2, wrist]
+depth_cameras: []
+features:
+  observation.cartesian_state: {names: [x, y, z, roll, pitch, yaw]}
+  observation.gripper: {names: [gripper]}
+  action: {names: [vx, vy, vz, wx, wy, wz, gripper]}
+rgb_encoder: {vcodec: libsvtav1, crf: 30, g: 2}
+phases: false
+curation:
+  min_quality: 0.5
+  split_by: session_id
+  split_ratios: {train: 0.8, val: 0.1, eval: 0.1}
+  seed: robodata-v1

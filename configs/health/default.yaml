@@ -1,0 +1,20 @@
+# Pass/fail thresholds for robodata health checks (see robodata.health.checks).
+max_drop_ratio: 0.02          # > 2% missing samples of any stream -> fail
+max_gap_factor: 3.0           # gap > 3 nominal periods -> warn
+max_burst_gap_ms: 250         # any gap > 250 ms -> fail
+max_rate_deviation: 0.10      # measured rate vs nominal
+max_drift_ppm: 1000           # device clock drift vs host clock
+min_drift_duration_s: 1       # and only when the slope estimate noise is < max_drift_ppm / 2
+max_sync_residual_p95_ms: 15  # camera-to-grid residual (p95) -> fail
+max_sync_residual_warn_ms: 8
+max_corrupt_frames: 0         # black / glitch frames / undecodable / all-invalid depth
+max_frozen_run: 15            # > 0.5 s of identical frames at 30 Hz
+black_frame_mean: 4.0
+max_nan_ratio: 0.0
+min_duration_s: 2.0
+max_duration_s: 600
+max_timestamp_jump_ms: 100
+max_video_ts_mismatch: 0
+max_out_of_range_ratio: 0.01
+max_idle_ratio: 0.9
+require_calibration: warn     # fail | warn | ignore

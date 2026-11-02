@@ -1,0 +1,30 @@
+# Real (open-source catheter insertion, UR5) + simulated (MuJoCo twin) insertion demos in ONE schema.
+name: ur5_insertion_mixed
+repo_id: robodata/ur5_insertion_mixed
+fps: 30
+image_size: [240, 320]        # H, W - real 480x640 is downscaled, sim is rendered at 240x320
+robot_type: ur5
+license: apache-2.0
+sources:
+  - {robot_id: ur5_catheter}
+  - {robot_id: ur5_sim}
+cameras: [front, wrist, base]
+depth_cameras: [front, wrist, base]
+features:
+  observation.state: {names: [shoulder_pan.pos, shoulder_lift.pos, elbow.pos, wrist_1.pos, wrist_2.pos, wrist_3.pos, gripper.pos]}
+  observation.ee_pose: {names: [x, y, z, qx, qy, qz, qw]}
+  observation.force_torque: {names: [fx, fy, fz, tx, ty, tz]}
+  teleop.target_pose: {names: [x, y, z, qx, qy, qz, qw]}
+  action: {names: [shoulder_pan.pos, shoulder_lift.pos, elbow.pos, wrist_1.pos, wrist_2.pos, wrist_3.pos, gripper.pos]}
+depth: {depth_min: 0.05, depth_max: 3.0, use_log: false}
+rgb_encoder: {vcodec: libsvtav1, crf: 30, g: 2}
+phases: true
+curation:
+  min_quality: 0.5
+  require_success: false        # failed sim demos are scored down (q_success=0.2) -> filtered by min_quality
+  dedup_traj_threshold: 0.05
+  dedup_phash_threshold: 6
+  split_by: session_id          # real: recording session, sim: scene (session == scene)
+  split_ratios: {train: 0.8, val: 0.1, eval: 0.1}
+  eval_groups: [sim_scene_05]   # held-out simulated scene for evaluation
+  seed: robodata-v1

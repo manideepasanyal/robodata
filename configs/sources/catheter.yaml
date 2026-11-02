@@ -1,0 +1,27 @@
+# Open-source real-robot data replayed through the virtual robot -> raw episodes (robot: ur5_catheter)
+name: catheter
+repo_id: giakhuyendihoc/catheter_force_depth_eef
+revision: a30b07068fa368f0966a84aa36c3fc5d94b0845f   # pinned for reproducibility
+license: apache-2.0
+robot: ur5_catheter
+local_dir: data/sources/giakhuyendihoc__catheter_force_depth_eef
+episodes: all
+session_size: 10            # source has no session info: consecutive demos are grouped into sessions
+operator: source_operator_0
+scene_id: catheter_bench
+success: true               # source publishes successful demonstrations only
+notes: >
+  Depth is published as 8-bit grayscale video (0 = invalid, linear in range). It is decoded to
+  uint16 millimetres with an assumed 2.0 m full-scale range (documented assumption, see dataset card).
+streams:
+  front: {key: observation.images.front}
+  wrist: {key: observation.images.wrist}
+  base: {key: observation.images.base}
+  front_depth: {key: observation.images.front_depth, decode: {mode: gray_linear, max_m: 2.0}}
+  wrist_depth: {key: observation.images.wrist_depth, decode: {mode: gray_linear, max_m: 2.0}}
+  base_depth: {key: observation.images.base_depth, decode: {mode: gray_linear, max_m: 2.0}}
+  joint_states: {key: observation.state}
+  ee_pose: {key: observation.ee_pose}
+  wrench: {key: observation.force_torque}
+  teleop_cmd: {key: teleop.target_pose}
+  action: {key: action}

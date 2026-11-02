@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>robodata_capture_cpp</name>
+  <version>0.1.0</version>
+  <description>High-rate, type-agnostic timestamp logger and live sync monitor (C++ fast path of the robodata recorder).</description>
+  <maintainer email="robodata@example.com">robodata</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>diagnostic_msgs</depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

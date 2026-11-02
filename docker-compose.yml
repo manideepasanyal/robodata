@@ -1,0 +1,18 @@
+# docker compose build && docker compose run --rm pipeline robodata --help
+services:
+  pipeline:
+    build: {context: ., dockerfile: docker/Dockerfile}
+    image: robodata:latest
+    volumes:
+      - ./data:/data              # sources, raw, quarantine, curated, datasets, versions, reports
+      - ./configs:/workspace/configs
+    environment: [ROBODATA_DATA=/data]
+    shm_size: 4gb
+  # ROS 2 end-to-end: replay a raw episode as live topics and record it with the recorder node
+  ros-demo:
+    image: robodata:latest
+    volumes: [./data:/data]
+    command: >
+      bash -c "ros2 launch robodata_ros replay_and_record.launch.py
+      episode:=$${EPISODE} robot:=$${ROBOT:-ur5_sim} raw_root:=/data/ros_raw"
+    environment: [EPISODE, ROBOT]

@@ -1,0 +1,18 @@
+# Native MuJoCo log (robodata.sim.generate) -> raw episodes of robot ur5_sim.
+# Same stream names as the real UR5 rig; units/conventions converted to ROS conventions.
+name: sim_ur5
+generator: robodata.sim.generate/mujoco
+license: apache-2.0
+robot: ur5_sim
+streams:
+  front: {key: cameras/cam_front/rgb, t: cameras/cam_front/t, sensor_model: rgb_read_noise}
+  wrist: {key: cameras/cam_wrist/rgb, t: cameras/cam_wrist/t, sensor_model: rgb_read_noise}
+  base: {key: cameras/cam_base/rgb, t: cameras/cam_base/t, sensor_model: rgb_read_noise}
+  front_depth: {key: cameras/cam_front/depth_m, t: cameras/cam_front/t, transform: m_to_mm, sensor_model: depth_realsense}
+  wrist_depth: {key: cameras/cam_wrist/depth_m, t: cameras/cam_wrist/t, transform: m_to_mm, sensor_model: depth_realsense}
+  base_depth: {key: cameras/cam_base/depth_m, t: cameras/cam_base/t, transform: m_to_mm, sensor_model: depth_realsense}
+  joint_states: {key: sensors/qpos/data, t: sensors/qpos/t}
+  ee_pose: {key: sensors/tcp_pose/data, t: sensors/tcp_pose/t, transform: wxyz_to_xyzw}
+  wrench: {key: sensors/ft/data, t: sensors/ft/t}
+  teleop_cmd: {key: sensors/teleop_target/data, t: sensors/teleop_target/t}
+  action: {key: sensors/ctrl/data, t: sensors/ctrl/t}

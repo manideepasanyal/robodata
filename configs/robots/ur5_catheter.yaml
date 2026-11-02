@@ -1,0 +1,139 @@
+# UR5 + 3x RealSense (front, wrist, base) + 6-axis wrist F/T + SpaceMouse teleop.
+# Matches the open-source catheter insertion dataset (giakhuyendihoc/catheter_force_depth_eef).
+robot_id: ur5_catheter
+robot_type: ur5
+description: UR5 e-series arm, Robotiq gripper holding a cable, wrist F/T, 3 RGB-D cameras, SpaceMouse teleop.
+target_fps: 30
+calibration_version: uncalibrated   # source dataset ships no calibration -> health check warns
+sync:
+  mode: free_run                     # RealSense units are not hardware-triggered in this rig
+  reference_stream: front
+  clock_fit: lower_envelope
+  max_frame_tolerance_ms: 20
+raw_video: {codec: libx264, crf: 18, preset: veryfast, gop: 30}
+
+streams:
+  front:
+    kind: rgb
+    topic: /camera_front/color/image_raw
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 30
+    shape: [480, 640, 3]
+    dtype: uint8
+    frame_id: camera_front_color_optical_frame
+    known_latency_ms: 24.0
+    clock: {offset_ms: 3.2, drift_ppm: 25, jitter_ms: 0.3, latency_ms: 25, latency_jitter_ms: 4, drop_prob: 0.002}
+  front_depth:
+    kind: depth
+    topic: /camera_front/aligned_depth_to_color/image_raw
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 30
+    shape: [480, 640]
+    dtype: uint16
+    depth_unit: mm
+    frame_id: camera_front_color_optical_frame
+    known_latency_ms: 30.0
+    clock: {offset_ms: 3.2, drift_ppm: 25, jitter_ms: 0.3, latency_ms: 31, latency_jitter_ms: 4, drop_prob: 0.002}
+  wrist:
+    kind: rgb
+    topic: /camera_wrist/color/image_raw
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 30
+    shape: [480, 640, 3]
+    dtype: uint8
+    frame_id: camera_wrist_color_optical_frame
+    known_latency_ms: 34.0
+    clock: {offset_ms: -7.5, drift_ppm: -40, jitter_ms: 0.5, latency_ms: 35, latency_jitter_ms: 6, drop_prob: 0.004}
+  wrist_depth:
+    kind: depth
+    topic: /camera_wrist/aligned_depth_to_color/image_raw
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 30
+    shape: [480, 640]
+    dtype: uint16
+    depth_unit: mm
+    frame_id: camera_wrist_color_optical_frame
+    known_latency_ms: 40.0
+    clock: {offset_ms: -7.5, drift_ppm: -40, jitter_ms: 0.5, latency_ms: 41, latency_jitter_ms: 6, drop_prob: 0.004}
+  base:
+    kind: rgb
+    topic: /camera_base/color/image_raw
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 30
+    shape: [480, 640, 3]
+    dtype: uint8
+    frame_id: camera_base_color_optical_frame
+    known_latency_ms: 26.0
+    clock: {offset_ms: 11.0, drift_ppm: 60, jitter_ms: 0.3, latency_ms: 27, latency_jitter_ms: 4, drop_prob: 0.002}
+  base_depth:
+    kind: depth
+    topic: /camera_base/aligned_depth_to_color/image_raw
+    msg_type: sensor_msgs/msg/Image
+    rate_hz: 30
+    shape: [480, 640]
+    dtype: uint16
+    depth_unit: mm
+    frame_id: camera_base_color_optical_frame
+    known_latency_ms: 32.0
+    clock: {offset_ms: 11.0, drift_ppm: 60, jitter_ms: 0.3, latency_ms: 33, latency_jitter_ms: 4, drop_prob: 0.002}
+  joint_states:
+    kind: joint_state
+    topic: /joint_states
+    msg_type: sensor_msgs/msg/JointState
+    rate_hz: 30
+    shape: [7]
+    names: [shoulder_pan.pos, shoulder_lift.pos, elbow.pos, wrist_1.pos, wrist_2.pos, wrist_3.pos, gripper.pos]
+    value_range: [[-6.3, 6.3], [-6.3, 6.3], [-3.2, 3.2], [-6.3, 6.3], [-6.3, 6.3], [-6.3, 6.3], [0, 1]]
+    known_latency_ms: 2.0
+    clock: {offset_ms: 0.0, drift_ppm: 2, jitter_ms: 0.05, latency_ms: 2, latency_jitter_ms: 0.5}
+  ee_pose:
+    kind: pose
+    topic: /tcp_pose
+    msg_type: geometry_msgs/msg/PoseStamped
+    rate_hz: 30
+    shape: [7]
+    names: [x, y, z, qx, qy, qz, qw]
+    known_latency_ms: 2.0
+    clock: {offset_ms: 0.0, drift_ppm: 2, jitter_ms: 0.05, latency_ms: 2, latency_jitter_ms: 0.5}
+  wrench:
+    kind: wrench
+    topic: /ft_sensor/wrench
+    msg_type: geometry_msgs/msg/WrenchStamped
+    rate_hz: 30
+    shape: [6]
+    names: [fx, fy, fz, tx, ty, tz]
+    value_range: [[-200, 200], [-200, 200], [-200, 200], [-20, 20], [-20, 20], [-20, 20]]
+    known_latency_ms: 3.0
+    clock: {offset_ms: 1.5, drift_ppm: 10, jitter_ms: 0.1, latency_ms: 3, latency_jitter_ms: 0.8, drop_prob: 0.001}
+  teleop_cmd:
+    kind: pose_cmd
+    topic: /teleop/target_pose
+    msg_type: geometry_msgs/msg/PoseStamped
+    rate_hz: 30
+    shape: [7]
+    names: [x, y, z, qx, qy, qz, qw]
+    known_latency_ms: 1.0
+    clock: {latency_ms: 1, latency_jitter_ms: 0.3}
+  action:
+    kind: joint_cmd
+    topic: /joint_command
+    msg_type: sensor_msgs/msg/JointState
+    rate_hz: 30
+    shape: [7]
+    names: [shoulder_pan.pos, shoulder_lift.pos, elbow.pos, wrist_1.pos, wrist_2.pos, wrist_3.pos, gripper.pos]
+    known_latency_ms: 1.0
+    clock: {latency_ms: 1, latency_jitter_ms: 0.3}
+
+# raw stream -> training feature (LeRobot keys)
+features:
+  observation.images.front: {stream: front}
+  observation.images.wrist: {stream: wrist}
+  observation.images.base: {stream: base}
+  observation.images.front_depth: {stream: front_depth}
+  observation.images.wrist_depth: {stream: wrist_depth}
+  observation.images.base_depth: {stream: base_depth}
+  observation.state: {stream: joint_states, interp: linear}
+  observation.ee_pose: {stream: ee_pose, interp: pose}
+  observation.force_torque: {stream: wrench, interp: lowpass_linear}
+  teleop.target_pose: {stream: teleop_cmd, interp: hold}
+  action: {stream: action, interp: hold}
